@@ -9,6 +9,6 @@ Package stages (see ../../docs/PIPELINE.md):
   diff         [6] inverse: recover growth from observed shape
   verify       [7] verification harness (runs all gates)
 """
-from . import config, state, constitutive, transfer, integrate, diff  # noqa: F401
+from . import config, state, constitutive, transfer, integrate, diff, io  # noqa: F401
 
-__all__ = ["config", "state", "constitutive", "transfer", "integrate", "diff"]
+__all__ = ["config", "state", "constitutive", "transfer", "integrate", "diff", "io"]

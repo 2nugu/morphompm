@@ -5,7 +5,7 @@
 Each stage gate is FD-based (analytic adjoints checked against finite differences)
 or oracle parity. A green run here is the pipeline's regression guard.
 """
-from . import constitutive, transfer, integrate, diff
+from . import constitutive, transfer, integrate, diff, io
 
 
 def run() -> int:
@@ -25,7 +25,10 @@ def run() -> int:
     print("\n### [6] diff: inverse growth-rate recovery ###")
     d_fail = diff.main()
 
-    ok = (c_fail == 0) and (t_fail == 0) and (p_fail == 0) and (i_fail == 0) and (d_fail == 0)
+    print("\n### [8] io: canonical <-> standard-format round-trip ###")
+    o_fail = io.main()
+
+    ok = all(f == 0 for f in (c_fail, t_fail, p_fail, i_fail, d_fail, o_fail))
     print("\n############################################################")
     print("PIPELINE VERIFY:", "ALL GATES PASS" if ok else "FAILURE")
     print("############################################################")
