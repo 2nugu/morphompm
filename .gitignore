@@ -12,3 +12,5 @@ __pycache__/
 
 # keep: src, python/, tests/, include/, docs/, scripts/, and outputs/figures/
 # (preserved reference artifacts: *.csv + *.png + *_desc.md)
+
+outputs/scene/
