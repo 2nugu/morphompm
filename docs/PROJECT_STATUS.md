@@ -61,6 +61,12 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 | Strong forward oracle (confined-swell, modulus-dependent, teeth-verified) — 3 independent verify axes | constitutive | 2026-07-03 |
 
 ## Active Decisions & Rationale
+- **Reproduction is first-class, not throwaway sanity.** (i) Reproducing established
+  results (Timoshenko/Savin) with the new differentiable method IS a contribution and
+  the substrate for the inverse; (ii) reproducibility (deterministic, versioned,
+  one-command) is a research pillar. Both preserved & analyzed alongside the novel
+  inverse. Infra: `scripts/reproduce.py` (one command, env-stamped), git-versioned
+  (first commit 675b030), determinism = single-thread/no-RNG → bit-identical.
 - **FD gates verify gradient-consistency, NOT forward correctness.** A wrong
   forward + matching adjoint passes every FD gate — the HB pressure-sign bug
   (2026-07-01 logic audit) did exactly that. Guard: `forward_physics_gate` (free-swell
