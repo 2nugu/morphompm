@@ -13,7 +13,7 @@ Gradient-based recovery of the growth rate g from an observed final shape (Σ de
 - Y: recovered g (target g_true=1.40)
 
 ## Key Observations
-Converges to g_true in 8 iterations; final |error| = 0.0e+00.
+Converges to g_true in 5 iterations; final |error| = 1.4e-13.
 
 ## Reproduction
 python scripts/results.py

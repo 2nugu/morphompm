@@ -1,3 +1,7 @@
+# EXPERIMENTAL / SUPERSEDED — not part of the morphompm package. Taichi autodiff
+# segfaults on matrix-MPM adjoints (see docs/PIPELINE.md); superseded by the numpy
+# package (morphompm.integrate/diff). Kept for the record; do NOT build on this.
+
 """morphompm — differentiable trajectory: gradient through the full multi-step
 growth-MPM sim, and inverse recovery of the growth rate from observed shape.
 

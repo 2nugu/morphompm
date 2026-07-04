@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 
 from morphompm.config import SimConfig
 from morphompm.constitutive import NeoHookean
-from morphompm.integrate import dloss_dg, rollout, iso_growth_state, loss_detF
+from morphompm.integrate import rollout, iso_growth_state, loss_detF
+from morphompm.diff import infer_growth
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIG = os.path.join(ROOT, "outputs", "figures")
@@ -33,11 +34,8 @@ def fig_inverse():
     n_steps, g_true = 3, 1.40
     st, _ = rollout(iso_growth_state(PTS, g_true), model, cfg, n_steps)
     target = loss_detF(st.F)
-    g, hist = 1.15, [1.15]
-    for _ in range(8):
-        loss, dg = dloss_dg(PTS, model, cfg, g, n_steps, advect=False)
-        g -= (loss - target) / dg
-        hist.append(g)
+    # share the SAME code path as the [6] gate — no reimplemented loop
+    _, _, hist = infer_growth(PTS, model, cfg, target, n_steps, g_init=1.15, return_history=True)
     its = list(range(len(hist)))
     with open(os.path.join(FIG, "inverse_recovery.csv"), "w", newline="") as f:
         w = csv.writer(f); w.writerow(["iteration", "g_estimate"])

@@ -6,8 +6,10 @@ import numpy as np
 from .integrate import dloss_dg, rollout, iso_growth_state, loss_detF
 
 
-def infer_growth(pts, model, cfg, target, n_steps, g_init, advect=False, iters=20, tol=1e-9):
+def infer_growth(pts, model, cfg, target, n_steps, g_init, advect=False, iters=20,
+                 tol=1e-9, return_history=False):
     g = g_init
+    hist = [g_init]
     for it in range(iters):
         loss, dg = dloss_dg(pts, model, cfg, g, n_steps, advect)
         resid = loss - target
@@ -18,7 +20,8 @@ def infer_growth(pts, model, cfg, target, n_steps, g_init, advect=False, iters=2
             continue
         step = resid / dg
         g -= max(-0.5, min(0.5, step))                 # damp: cap |Δg| for robustness
-    return g, it + 1
+        hist.append(g)
+    return (g, it + 1, hist) if return_history else (g, it + 1)
 
 
 def main():

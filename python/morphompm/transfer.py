@@ -80,6 +80,10 @@ def step(state, model, cfg, advect=True):
 
 
 def step_vjp(cache, xn_b, vn_b, Cn_b, Fn_b, Fgn_b, advect=True):
+    """Reverse of step(). CONTRACT: with advect=False, x is a FROZEN input and x_b
+    is returned as 0 — NOT the true ∂/∂x (the forward's weights still depend on x).
+    Valid only when the caller needs no ∂/∂x in fixed mode (all current gates: loss
+    on F). Use advect=True for the full ∂/∂x. Must match the advect used in step()."""
     state, cfg, model, gm, gv, pc, Cn = cache
     x, v, C, F, Fg = state.x, state.v, state.C, state.F, state.Fg
     n = state.n

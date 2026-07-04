@@ -1,3 +1,7 @@
+# EXPERIMENTAL / SUPERSEDED — not part of the morphompm package. Taichi autodiff
+# segfaults on matrix-MPM adjoints (see docs/PIPELINE.md); superseded by the numpy
+# package (morphompm.integrate/diff). Kept for the record; do NOT build on this.
+
 """morphompm — Taichi port of the morphoelastic growth MLS-MPM (v1 forward),
 plus the differentiability the C++ path would have to hand-roll.
 

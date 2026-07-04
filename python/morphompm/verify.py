@@ -28,7 +28,10 @@ def run() -> int:
     print("\n### [8] io: canonical <-> standard-format round-trip ###")
     o_fail = io.main()
 
-    ok = all(f == 0 for f in (c_fail, t_fail, p_fail, i_fail, d_fail, o_fail))
+    print("\n### [D] determinism: identical numpy runs bit-identical ###")
+    det_fail = integrate.determinism_gate()
+
+    ok = all(f == 0 for f in (c_fail, t_fail, p_fail, i_fail, d_fail, o_fail, det_fail))
     print("\n############################################################")
     print("PIPELINE VERIFY:", "ALL GATES PASS" if ok else "FAILURE")
     print("############################################################")

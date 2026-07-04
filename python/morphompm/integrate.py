@@ -69,14 +69,17 @@ def forward_physics_gate():
     expand toward det F = g^3 (C++/analytic oracle). FD gates can't catch a wrong
     forward — this can (it caught the HB pressure-sign bug, 2026-07-01)."""
     from .config import SimConfig
-    from .constitutive import NeoHookean, HerschelBulkley
+    from .constitutive import NeoHookean, Hencky, HerschelBulkley
     cfg = SimConfig(N=12, dx=0.05, dt=1.0e-3, damping=0.05, sp=0.03)
     g, n_steps = 1.5, 150
     c = np.arange(0.30 - 0.015, 0.30 + 0.015 + 1e-9, 0.03)
     pts = np.array([(x, y, z) for x in c for y in c for z in c])   # 8-particle cube
     print("== [1p] forward physics: free-swell det F -> g^3 (guards forward correctness) ==")
     ok = True
-    for name, model in [("NeoHookean", NeoHookean(cfg.material)), ("HerschelBulkley", HerschelBulkley())]:
+    # Hencky included: it is the law the C++ oracle runs (numpy↔C++ law consistency).
+    for name, model in [("NeoHookean", NeoHookean(cfg.material)),
+                        ("Hencky", Hencky(cfg.material)),
+                        ("HerschelBulkley", HerschelBulkley())]:
         st = iso_growth_state(pts, g)
         st, _ = rollout(st, model, cfg, n_steps, advect=True)
         d = float(np.mean([np.linalg.det(st.F[p]) for p in range(st.n)]))
@@ -84,6 +87,27 @@ def forward_physics_gate():
         print(f"    {name}: mean det F = {d:.4f} (toward g^3={g**3:.3f})  [{'ok' if good else 'FAIL'}]")
         ok &= good
     return 0 if ok else 1
+
+
+def determinism_gate():
+    """Reproducibility pillar: identical numpy runs must be bit-identical (single
+    thread, no RNG in the physics). Guards the determinism claim in Python."""
+    from .config import SimConfig
+    from .constitutive import NeoHookean
+    cfg = SimConfig()
+    model = NeoHookean(cfg.material)
+    pts = np.array([[0.40, 0.40, 0.40], [0.42, 0.40, 0.41], [0.40, 0.43, 0.40],
+                    [0.41, 0.40, 0.44], [0.44, 0.44, 0.43]])
+
+    def run():
+        st, _ = rollout(iso_growth_state(pts, 1.3), model, cfg, 3, advect=True)
+        return st.F.copy()
+
+    a, b = run(), run()
+    d = float(np.max(np.abs(a - b)))
+    print("== [D] determinism: identical numpy runs bit-identical ==")
+    print(f"    max|F_run1 - F_run2| = {d:.1e}  [{'ok' if d == 0.0 else 'FAIL'}]")
+    return 0 if d == 0.0 else 1
 
 
 def main():
