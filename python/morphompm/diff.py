@@ -13,7 +13,11 @@ def infer_growth(pts, model, cfg, target, n_steps, g_init, advect=False, iters=2
         resid = loss - target
         if abs(resid) < tol:
             break
-        g -= resid / dg
+        if abs(dg) < 1e-12 or not np.isfinite(dg):    # guard: dg crosses 0 (root ~g≈0.6)
+            g += 1e-3 * (1.0 if resid < 0 else -1.0)   # nudge off the stationary point
+            continue
+        step = resid / dg
+        g -= max(-0.5, min(0.5, step))                 # damp: cap |Δg| for robustness
     return g, it + 1
 
 

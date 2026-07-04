@@ -2,6 +2,8 @@
 PNG + CSV + _desc.md, English labels, no popup). Fast (numpy pipeline)."""
 import csv
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "python"))
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

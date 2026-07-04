@@ -48,6 +48,7 @@ def step(state, model, cfg, advect=True):
             wt = w[i, 0] * w[j, 1] * w[k, 2]
             dpos = (np.array([i, j, k]) - fx) * dx
             ni, nj, nk = base + [i, j, k]
+            if not (0 <= ni < N and 0 <= nj < N and 0 <= nk < N): continue  # bounds (match C++ in_range)
             gm[ni, nj, nk] += wt * pmass
             gmom[ni, nj, nk] += wt * (pmass * (v[p] + C[p] @ dpos) + (sk @ dpos) * dt)
         pc.append((base, fx, w, dw, tau, c, sk))
@@ -65,6 +66,7 @@ def step(state, model, cfg, advect=True):
             wt = w[i, 0] * w[j, 1] * w[k, 2]
             dpos = (np.array([i, j, k]) - fx) * dx
             ni, nj, nk = base + [i, j, k]
+            if not (0 <= ni < N and 0 <= nj < N and 0 <= nk < N): continue  # bounds (match C++ in_range)
             vi = gv[ni, nj, nk]
             nv += wt * vi
             nC += k4 * wt * np.outer(vi, dpos)
@@ -102,6 +104,7 @@ def step_vjp(cache, xn_b, vn_b, Cn_b, Fn_b, Fgn_b, advect=True):
             wt = w[i, 0] * w[j, 1] * w[k, 2]
             dpos = (np.array([i, j, k]) - fx) * dx
             ni, nj, nk = base + [i, j, k]
+            if not (0 <= ni < N and 0 <= nj < N and 0 <= nk < N): continue  # bounds (match C++ in_range)
             vi = gv[ni, nj, nk]
             gv_b[ni, nj, nk] += wt * nv_b
             gv_b[ni, nj, nk] += k4 * wt * (Cn_b_p @ dpos)
@@ -127,6 +130,7 @@ def step_vjp(cache, xn_b, vn_b, Cn_b, Fn_b, Fgn_b, advect=True):
             wt = w[i, 0] * w[j, 1] * w[k, 2]
             dpos = (np.array([i, j, k]) - fx) * dx
             ni, nj, nk = base + [i, j, k]
+            if not (0 <= ni < N and 0 <= nj < N and 0 <= nk < N): continue  # bounds (match C++ in_range)
             mb = gmom_b[ni, nj, nk]
             v_b[p] += wt * pmass * mb
             C_b[p] += wt * pmass * np.outer(mb, dpos)

@@ -2,8 +2,21 @@
 base64 data URIs). Output: outputs/morphompm_dashboard.html (rendered via Artifact)."""
 import base64
 import os
+import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _githash():
+    try:
+        r = subprocess.run(["git", "-C", ROOT, "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else "uncommitted"
+    except Exception:
+        return "uncommitted"
+
+
+GITHASH = _githash()
 FIG = os.path.join(ROOT, "outputs", "figures")
 OUT = os.path.join(ROOT, "outputs", "morphompm_dashboard.html")
 
@@ -129,7 +142,7 @@ HTML = f"""<style>
   <div class="meta">
     <span><b>Phase 2</b> &middot; morphoelastic morphogenesis</span>
     <span>verification: <b>3 independent axes</b></span>
-    <span>reproducible: <b>git&nbsp;675b030</b></span>
+    <span>reproducible: <b>git&nbsp;{GITHASH}</b></span>
     <span>status: <b>core complete</b></span>
   </div>
 

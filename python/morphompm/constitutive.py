@@ -48,24 +48,28 @@ def _hencky_stress(F, Fg, mu, lam):
 
 
 def _hencky_vjp(F, Fg, mu, lam, tau_bar):
+    # Hencky Kirchhoff stress is an isotropic tensor function of the left
+    # Cauchy-Green b = Fe·Feᵀ:  τ = μ·logm(b) + (λ/2)·tr(logm b)·I.
+    # Its adjoint uses the Daleckii-Krein derivative of logm — DEGENERACY-SAFE:
+    # the off-diagonal divided difference (ln βi − ln βj)/(βi − βj) has the finite
+    # limit 1/βi at repeated eigenvalues (isotropy, Fe=I — the growth model's rest
+    # regime). This replaces the old 1/(s_j²−s_i²) form whose clamp WRONGLY zeroed
+    # the gradient at degeneracy (audit 2026-07-04).
     Fg_inv = np.linalg.inv(Fg)
     Fe = F @ Fg_inv
-    U, s, Vh = np.linalg.svd(Fe)
+    U, s, _Vh = np.linalg.svd(Fe)
     tb = 0.5 * (tau_bar + tau_bar.T)
-    S = np.sum(np.log(s))
-    h = 2.0 * mu * np.log(s) + lam * S
-    U_bar = 2.0 * tb @ U @ np.diag(h)
-    P = U.T @ tb @ U
-    s_bar = (2.0 * mu * np.diag(P) + lam * np.trace(P)) / s
-    Fmat = np.zeros((3, 3))                     # 1/(s_j^2 - s_i^2), clamped at degeneracy
+    beta = s * s                                    # eigenvalues of b
+    lb = np.log(beta)
+    M = mu * tb + 0.5 * lam * np.trace(tb) * I3     # ∂L/∂(logm b), pulled through
+    UtMU = U.T @ M @ U
+    L = np.empty((3, 3))                            # Daleckii-Krein divided differences
     for i in range(3):
         for j in range(3):
-            if i != j:
-                d = s[j] ** 2 - s[i] ** 2
-                Fmat[i, j] = 1.0 / d if abs(d) > _DEGEN else 0.0
-    UtUb = U.T @ U_bar
-    inner = np.diag(s_bar) + (Fmat * (UtUb - UtUb.T)) @ np.diag(s)
-    Fe_bar = U @ inner @ Vh
+            d = beta[i] - beta[j]
+            L[i, j] = (lb[i] - lb[j]) / d if abs(d) > _DEGEN else 1.0 / beta[i]
+    Bbar = U @ (UtMU * L) @ U.T
+    Fe_bar = 2.0 * Bbar @ Fe                         # b = Fe Feᵀ → Fe_bar = 2 B̄ Fe
     F_bar = Fe_bar @ Fg_inv.T
     Fg_bar = -Fg_inv.T @ F.T @ Fe_bar @ Fg_inv.T
     return F_bar, Fg_bar
@@ -101,8 +105,10 @@ class Hencky(_ElasticModel):
 
 class HerschelBulkley:
     """Rate-dependent yield-stress fluid (bioink), Papanastasiou-regularized.
-        τ = -p(Je)·I + 2·η(γ̇)·D ,  D = sym(C),  Je = det F / det Fg
-        η = K·γ̇^{n-1} + τ_y·(1-e^{-m γ̇})/γ̇ ,  p = κ·(Je-1)
+        τ = κ·ln(Je)·I + 2·η(γ̇)·D ,  D = sym(C),  Je = det F / det Fg
+        η = K·γ̇^{n-1} + τ_y·(1-e^{-m γ̇})/γ̇
+    (κ·ln(Je) is negative at Je<1 → drives expansion; a -κ(Je-1) form has the WRONG
+    sign and collapses the material — see logic-audit note in stress().)
     Uses C (velocity gradient) → exercises the C_bar seam path. NOT elastic:
     own params (κ,K,n,τ_y,m), so it does not inherit _ElasticModel (O1)."""
 
@@ -211,6 +217,18 @@ def main():
         print(f"[{name}]  F=Fg->||tau||={z:.1e} [{'ok' if ok_zero else 'FAIL'}]"
               f"   VJP vs FD worst={worst:.2e} [{'ok' if worst < 1e-5 else 'FAIL'}]")
         fails += (not ok_zero) + (worst >= 1e-5)
+    # Hencky at REPEATED singular values (isotropy = the growth model's rest regime).
+    # This path (degenerate SVD) was previously untested and hid a clamp-to-zero bug.
+    hk = Hencky(mat)
+    deg_states = [(np.diag([1.5, 1.5, 1.2]) + 1e-4 * rng.standard_normal((3, 3)), np.eye(3)),
+                  (np.diag([1.3, 1.3, 1.3]) + 1e-4 * rng.standard_normal((3, 3)), np.eye(3))]
+    worst_deg = max(_vjp_rel_err(hk, F, Fg, rng) for F, Fg in deg_states for _ in range(4))
+    Fb, Fgb, _ = hk.stress_vjp(1.3 * np.eye(3), np.eye(3), None, np.eye(3))   # exact isotropy
+    finite_iso = bool(np.all(np.isfinite(Fb)) and np.all(np.isfinite(Fgb)))
+    print(f"[Hencky degeneracy (repeated SVs / isotropy)]  VJP vs FD worst={worst_deg:.2e} "
+          f"[{'ok' if worst_deg < 1e-3 else 'FAIL'}]   exact-isotropy finite [{'ok' if finite_iso else 'FAIL'}]")
+    fails += (worst_deg >= 1e-3) + (not finite_iso)
+
     # rate-dependent bioink (needs C; exercises C_bar path)
     hb = HerschelBulkley()
     z = np.max(np.abs(hb.stress(np.eye(3), np.eye(3), np.zeros((3, 3)))))   # rest, Je=1 -> 0

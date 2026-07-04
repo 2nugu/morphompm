@@ -15,10 +15,14 @@ LOW code burden (no nozzle/free-surface). Aligns with neighbor lab's cell-cultur
 scaffold axis. HB(bioink) preserved as a dormant module for a future extrusion track.
 
 First quantitative morphogenesis validation DONE: **T8 bilayer bending curvature vs
-Timoshenko** — reproduces linear-in-mismatch scaling (1.86≈2.0) and correct order
-of magnitude, systematic ~0.58× vs idealized 1D thin-beam (3D/finite-thickness/
-Poisson; analytic assumptions unmet). Honest: scaling+magnitude, not tight — tight
-match needs a convergence study (thinner + plane-strain + finer → scale/vectorization).
+Timoshenko** — reproduces linear-in-mismatch scaling (1.86≈2.0), correct order of
+magnitude, ratio 0.60 @ 4000 steps. Cause of the offset DIAGNOSED (2026-07-04 multi-
+agent logic audit) as **UNDER-RELAXATION** — NOT the earlier (retracted) "3D/finite-
+thickness/Poisson" guess: transverse growth ruled out (axial-only=isotropic=0.60),
+grid resolution minor (h/dx 2→6: 0.60→0.63), relaxation confirmed (0.60@4k→0.76@12k,
+converging toward Timoshenko). A numerical-convergence artifact, not physics; the
+constitutive law itself is exact (confined-swell analytic oracle). Not yet run to
+full relaxation convergence.
 
 **Phase 1 (differentiable core) — COMPLETE:** constitutive(elastic+bioink) → transfer
 (advect adjoint) → trajectory → inverse design; 3 verify axes (FD, forward-physics,
@@ -29,9 +33,9 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
       (incl. hand-derived SVD adjoint), FD-gated (rel.err ≤ 1.5e-9).
 - [x] [3] Single-step transfer: P2G/grid/G2P forward + manual VJP; **assembly
       gate** (composed adjoint vs FD, rel.err 4.5e-10).
-- [x] Forward oracle: C++ MLS-MPM growth (T1–T7, 18 checks); Taichi parity
+- [x] Forward oracle: C++ MLS-MPM growth (T1–T8, incl. bilayer-vs-Timoshenko + degeneracy); Taichi parity
       (det F = 3.3750 exact).
-- [ ] [0]/[1] Config + State dataclasses; re-home modules into `python/morphompm/`.
+- [x] [0]/[1] Config + State dataclasses; modules re-homed into `python/morphompm/` (done).
 - [x] [4] Trajectory rollout + adjoint (compose per-step VJPs), FD-gated
       (3-step, momentum path active, rel.err 3.7e-10; advect=False).
 - [x] [6] Inverse-design demo: recover growth rate from observed shape
@@ -49,10 +53,10 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 ## Completed Milestones
 | Milestone | Output | Date |
 |-----------|--------|------|
-| C++ growth-MPM forward (iso/aniso/differential), 18 checks | `tests/test_growth.cpp` | 2026-06-28 |
+| C++ growth-MPM forward (iso/aniso/differential), T1–T8 | `tests/test_growth.cpp` | 2026-06-28 |
 | Differential-growth residual-stress + bend figure | `outputs/figures/differential_growth.*` | 2026-06-28 |
 | Self-contained (math headers vendored) | `include/basements/core/math/` | 2026-06-28 |
-| Taichi forward parity + constitutive autodiff | `python/growth_mpm.py` | 2026-06-29 |
+| Taichi forward parity + constitutive autodiff | `python/experiments/growth_mpm.py` | 2026-06-29 |
 | Constitutive seam + manual VJPs (incl. SVD adjoint), FD-gated | `constitutive.py` | 2026-07-01 |
 | Transfer seam + composed assembly gate | `transfer.py` | 2026-07-01 |
 | Pipeline architecture formalized | `docs/PIPELINE.md` | 2026-07-01 |
@@ -83,7 +87,7 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
   compatibility via standard formats, not built integrations.
 
 ## Open Questions
-- [ ] SVD adjoint degeneracy clamp (isotropic growth s_i≈s_j) — error band TBD.
+- [x] SVD adjoint degeneracy: RESOLVED (2026-07-04) — Daleckii-Krein form, degeneracy-safe (VJP vs FD 5e-10 at repeated SVs); replaced the wrong clamp-to-zero.
 - [ ] Trajectory adjoint memory strategy (checkpointing) at scale.
 - [ ] Herschel-Bulkley VJP difficulty (yield-stress nonsmoothness) — gauge before committing.
 - [ ] Real-data access shape (rheometry vs full-field DIC) from neighbor lab.
@@ -91,7 +95,7 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 ## Key Outputs Registry
 | Type | File | Description |
 |------|------|-------------|
-| Oracle | `include/morphompm/growth_solver.h` + `tests/test_growth.cpp` | C++ forward, 18 checks |
+| Oracle | `include/morphompm/growth_solver.h` + `tests/test_growth.cpp` | C++ forward oracle, T1–T8 |
 | Module | `python/morphompm/constitutive.py` | stress + VJP (neo-Hookean, Hencky) |
 | Module | `python/morphompm/transfer.py` | single-step MPM + VJP, assembly gate |
 | Figure | `outputs/figures/differential_growth.png` | residual-stress bending |

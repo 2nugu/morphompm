@@ -60,6 +60,12 @@ def main():
         print("    build:  cmake -S . -B build -G \"Visual Studio 17 2022\" -A x64")
         print("            cmake --build build --config Release")
 
+    # regenerate the presented artifacts from the source of truth (no hand-editing)
+    ok &= run([sys.executable, os.path.join(ROOT, "scripts", "results.py")], PYDIR,
+              "[4] regenerate result figures (inverse_recovery, bending_timoshenko)")
+    ok &= run([sys.executable, os.path.join(ROOT, "scripts", "make_dashboard.py")], ROOT,
+              "[5] regenerate dashboard (embeds current figures + live git hash)")
+
     print("\n############ REPRODUCE:", "ALL OK" if ok else "FAILURE", "############")
     return 0 if ok else 1
 

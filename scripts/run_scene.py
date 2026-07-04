@@ -6,6 +6,8 @@ ParaView/VisIt animate — rotate, zoom, pick, color-by-field, time-scrub — fo
     # then open outputs/scene/frame_*.vtk in ParaView and press Play.
 """
 import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "python"))
 import numpy as np
 from morphompm.config import SimConfig
 from morphompm.constitutive import NeoHookean
