@@ -18,9 +18,12 @@ import numpy as np
 from .state import ParticleState
 from .config import SimConfig, Material
 
+_CCOLS = [f"C{i}{j}" for i in range(3) for j in range(3)]
 _FCOLS = [f"F{i}{j}" for i in range(3) for j in range(3)]
 _GCOLS = [f"Fg{i}{j}" for i in range(3) for j in range(3)]
-_CSV_HEADER = ["x", "y", "z", "vx", "vy", "vz"] + _FCOLS + _GCOLS
+# CSV is LOSSLESS (carries APIC affine C too) so a mid-trajectory checkpoint
+# survives round-trip; .npz remains the compact binary canonical form.
+_CSV_HEADER = ["x", "y", "z", "vx", "vy", "vz"] + _CCOLS + _FCOLS + _GCOLS
 
 
 # ── ParticleState <-> file (dispatch on extension) ───────────────────────────
@@ -50,22 +53,23 @@ def _save_csv(state, path):
     with open(path, "w", newline="") as f:
         w = csv.writer(f); w.writerow(_CSV_HEADER)
         for p in range(state.n):
-            row = list(state.x[p]) + list(state.v[p]) \
+            row = list(state.x[p]) + list(state.v[p]) + list(state.C[p].ravel()) \
                 + list(state.F[p].ravel()) + list(state.Fg[p].ravel())
             w.writerow([f"{v:.9g}" for v in row])
 
 
 def _load_csv(path):
-    xs, vs, Fs, Fgs = [], [], [], []
+    xs, vs, Cs, Fs, Fgs = [], [], [], [], []
     with open(path) as f:
         for r in csv.DictReader(f):
             xs.append([float(r[c]) for c in ("x", "y", "z")])
             vs.append([float(r[c]) for c in ("vx", "vy", "vz")])
+            Cs.append([float(r[c]) for c in _CCOLS])
             Fs.append([float(r[c]) for c in _FCOLS])
             Fgs.append([float(r[c]) for c in _GCOLS])
     n = len(xs)
     return ParticleState(np.array(xs), np.array(vs),
-                         np.zeros((n, 3, 3)),
+                         np.array(Cs).reshape(n, 3, 3),
                          np.array(Fs).reshape(n, 3, 3),
                          np.array(Fgs).reshape(n, 3, 3))
 
@@ -137,9 +141,9 @@ def main():
     for ext, atol in ((".npz", 0.0), (".csv", 1e-6)):
         p = os.path.join(d, "s" + ext)
         save_state(st, p); back = load_state(p)
-        ok = (np.allclose(st.x, back.x, atol=atol) and np.allclose(st.F, back.F, atol=atol)
-              and np.allclose(st.Fg, back.Fg, atol=atol))
-        print(f"    {ext}: round-trip x/F/Fg {'exact' if atol==0 else f'<{atol:g}'}  [{'ok' if ok else 'FAIL'}]")
+        ok = all(np.allclose(getattr(st, a), getattr(back, a), atol=atol)
+                 for a in ("x", "v", "C", "F", "Fg"))          # ALL fields (C included)
+        print(f"    {ext}: round-trip x/v/C/F/Fg {'exact' if atol==0 else f'<{atol:g}'}  [{'ok' if ok else 'FAIL'}]")
         fails += not ok
     # config round-trip
     cfg = SimConfig(N=12, dx=0.05); save_config(cfg, os.path.join(d, "c.json"))

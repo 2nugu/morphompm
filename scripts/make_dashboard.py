@@ -170,9 +170,11 @@ HTML = f"""<style>
         <h3>Morphogenesis validation</h3>
         <img alt="bilayer bending vs Timoshenko" src="data:image/png;base64,{IMG['bend']}">
         <p class="cap">Differential-growth bilayer bending vs the independent Timoshenko analytic.</p>
-        <div class="note">Honest: linear-in-mismatch scaling reproduced (1.86 &asymp; 2.0) and
-          order of magnitude correct, but a systematic <b>~0.58&times;</b> vs the idealized 1D
-          thin-beam &mdash; 3D / finite-thickness / Poisson. Scaling &amp; magnitude, not tight.</div>
+        <div class="note">Linear-in-mismatch scaling reproduced (1.86 &asymp; 2.0). The
+          ~0.60&times; offset was <b>diagnosed as under-relaxation</b> (logic audit): transverse
+          growth ruled out (axial-only identical), grid resolution minor; the slow bending mode
+          is still relaxing (0.60 @ 4k &rarr; 0.76 @ 12k steps, climbing toward Timoshenko). A
+          numerical-convergence artifact, not a physics error.</div>
       </div>
     </div>
     <div class="fig" style="margin-top:20px">

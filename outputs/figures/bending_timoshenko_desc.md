@@ -13,7 +13,7 @@ Differential-growth bilayer bending curvature vs the independent Timoshenko bime
 - Y: bending curvature κ (1/m)
 
 ## Key Observations
-Linear-in-mismatch scaling reproduced (κ(2ε)/κ(ε)=1.86≈2.0); order of magnitude correct; systematic ~0.58× vs idealized 1D thin-beam (3D/finite-thickness/Poisson — analytic assumptions unmet). Honest: scaling+magnitude, not tight.
+Linear-in-mismatch scaling reproduced (κ(2ε)/κ(ε)=1.86≈2.0). The ~0.60× offset at 4000 steps was DIAGNOSED (2026-07-04) as UNDER-RELAXATION, not a physics/constitutive error: ruled out transverse growth (axial-only gives identical 0.60) and grid resolution (h/dx 2→6: 0.60→0.63); the slow bending mode is still relaxing (0.60@4k → 0.76@12k steps, climbing toward Timoshenko). Corrects an earlier wrong '3D/finite-thickness' attribution.
 
 ## Reproduction
 python scripts/results.py

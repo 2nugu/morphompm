@@ -65,11 +65,14 @@ def fig_bending():
     xs = np.linspace(0, 0.05, 50)
     ax.plot(xs, 30.0 * xs, "--", color="gray", label="Timoshenko  κ=1.5ε/h")
     ax.plot(eps, kT, "s", color="gray", ms=9)
-    ax.plot(eps, ksim, "o-", color="steelblue", label="MPM (T8)")
+    ax.plot(eps, ksim, "o-", color="steelblue", label="MPM (T8, 4000 steps)")
+    ax.annotate("ratio 0.60 @ 4000 steps → 0.76 @ 12000\n(UNDER-RELAXED: converges toward Timoshenko)",
+                xy=(0.02, 0.359), xytext=(0.006, 0.9), fontsize=8, color="#9C5A12",
+                arrowprops=dict(arrowstyle="->", color="#9C5A12"))
     ax.set_xlabel("growth mismatch  ε = g_top − g_bot")
     ax.set_ylabel("bending curvature κ (1/m)")
     ax.set_title("Morphogenesis validation: bilayer bending vs Timoshenko\n"
-                 "(linear scaling captured; systematic ~0.58× — 3D/finite-thickness)")
+                 "(linear scaling ✓; offset is relaxation-convergence, not physics)")
     ax.legend(bbox_to_anchor=(1.01, 1), loc="upper left")
     fig.tight_layout(); fig.savefig(os.path.join(FIG, "bending_timoshenko.png"), dpi=150)
     _desc("bending_timoshenko",
@@ -77,9 +80,12 @@ def fig_bending():
           "bimetal-strip analytic (κ=1.5ε/h). Forward-physics validation in the "
           "morphogenesis regime (C++ oracle test T8).",
           "- X: growth mismatch ε\n- Y: bending curvature κ (1/m)",
-          "Linear-in-mismatch scaling reproduced (κ(2ε)/κ(ε)=1.86≈2.0); order of "
-          "magnitude correct; systematic ~0.58× vs idealized 1D thin-beam (3D/finite-"
-          "thickness/Poisson — analytic assumptions unmet). Honest: scaling+magnitude, not tight.")
+          "Linear-in-mismatch scaling reproduced (κ(2ε)/κ(ε)=1.86≈2.0). The ~0.60× offset "
+          "at 4000 steps was DIAGNOSED (2026-07-04) as UNDER-RELAXATION, not a physics/"
+          "constitutive error: ruled out transverse growth (axial-only gives identical 0.60) "
+          "and grid resolution (h/dx 2→6: 0.60→0.63); the slow bending mode is still relaxing "
+          "(0.60@4k → 0.76@12k steps, climbing toward Timoshenko). Corrects an earlier wrong "
+          "'3D/finite-thickness' attribution.")
     print("wrote bending_timoshenko.{png,csv,_desc.md}")
 
 
