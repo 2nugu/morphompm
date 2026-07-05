@@ -53,6 +53,8 @@ def main():
     exe = os.path.join(ROOT, "build", "Release", "test_growth.exe")
     if os.path.exists(exe):
         ok &= run([exe], ROOT, "[2] C++ oracle (T1-T8: analytic + Timoshenko bending)")
+        ok &= run([sys.executable, os.path.join(ROOT, "scripts", "parity.py")], PYDIR,
+                  "[2b] numpy↔C++ parity (identical Hencky free-swell, compare F)")
         run([sys.executable, os.path.join("scripts", "plot_growth.py")], ROOT,
             "[3] regenerate preserved figure (differential_growth.*)")
     else:

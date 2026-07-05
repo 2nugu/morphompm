@@ -330,8 +330,35 @@ static void test_bilayer_timoshenko() {
     CHECK(k2/k1 > 1.6f && k2/k1 < 2.4f, "curvature scales ~linearly with growth mismatch");
 }
 
+// Dump a small Hencky free-swell reference for the numpy↔C++ parity gate
+// (scripts/parity.py runs the IDENTICAL scenario in numpy and compares F).
+// Scenario is fixed & tiny so numpy can match it exactly: N=12, dx=0.05,
+// 27-particle cube, Fg=1.05·I, 30 steps, dt=1e-3, damping=0.05.
+static void dump_parity_reference() {
+    GrowthSolver s(12, 0.05f);
+    s.set_material(1.0e4f, 0.3f); s.set_gravity(Vec3(0,0,0)); s.set_damping(0.05f);
+    const float sp = 0.03f, density = 1000.0f, pmass = density * sp * sp * sp;
+    for (float x = 0.27f; x <= 0.33f + 1e-6f; x += sp)
+    for (float y = 0.27f; y <= 0.33f + 1e-6f; y += sp)
+    for (float z = 0.27f; z <= 0.33f + 1e-6f; z += sp)
+        s.add_particle(Vec3(x, y, z), pmass, density);
+    for (auto& p : s.particles()) p.Fg = Matrix3::scale(Vec3(1.05f, 1.05f, 1.05f));
+    for (int m = 0; m < 30; ++m) s.step(1.0e-3f);
+    std::filesystem::create_directories("outputs");
+    std::ofstream f("outputs/parity_ref.csv");
+    f << "x,y,z,F00,F01,F02,F10,F11,F12,F20,F21,F22\n";
+    for (const auto& p : s.particles()) {
+        f << p.x.x << "," << p.x.y << "," << p.x.z;
+        for (int r = 0; r < 3; ++r) for (int c = 0; c < 3; ++c) f << "," << p.F.m[r][c];
+        f << "\n";
+    }
+    std::printf("[parity] wrote outputs/parity_ref.csv (%d particles, Hencky free-swell)\n",
+                (int)s.particles().size());
+}
+
 int main() {
     std::printf("== morphompm v1: morphoelastic growth in MLS-MPM ==\n\n");
+    dump_parity_reference();
     test_constitutive_isotropic();   std::printf("\n");
     test_constitutive_anisotropic(); std::printf("\n");
     test_free_swelling();            std::printf("\n");
