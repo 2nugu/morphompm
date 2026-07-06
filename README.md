@@ -65,7 +65,7 @@ separate axes (this split has caught real bugs). Runs are deterministic (single-
 ```
 python/morphompm/     the package — config, state, constitutive, transfer, integrate, diff, io, verify
 python/experiments/   Taichi ports (superseded; kept for the record — see banners)
-include/morphompm/     C++ forward-oracle solver (+ vendored linear-algebra headers under include/basements/)
+include/morphompm/     C++ forward-oracle solver + self-contained linear-algebra core (math/)
 tests/                 C++ oracle tests (analytic + Timoshenko bending)
 scripts/               reproduce, parity, results (figures), make_dashboard, run_scene
 docs/                  PROJECT_STATUS, PIPELINE (architecture), PHASE3 (roadmap), PREREG

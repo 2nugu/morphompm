@@ -4,8 +4,8 @@ project(morphompm CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Self-contained: math core (Vec3 / Matrix3 / SVD) vendored under
-# include/basements/core/math/ (originally from Basements; no external path).
+# Self-contained: math core (Vec3 / Matrix3 / SVD) lives under
+# include/morphompm/math/ (no external dependency).
 add_executable(test_growth tests/test_growth.cpp)
 target_include_directories(test_growth PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include)

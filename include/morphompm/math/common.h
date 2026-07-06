@@ -1,5 +1,5 @@
-#ifndef BASEMENTS_COMMON_H
-#define BASEMENTS_COMMON_H
+#ifndef MORPHOMPM_COMMON_H
+#define MORPHOMPM_COMMON_H
 
 #include <cmath>
 #include <algorithm>
@@ -11,7 +11,7 @@
     #define HOST_DEVICE
 #endif
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
 // ============================================================
@@ -95,6 +95,6 @@ HOST_DEVICE inline float smootherstep(float edge0, float edge1, float x) {
 }
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm
 
-#endif // BASEMENTS_COMMON_H
+#endif // MORPHOMPM_COMMON_H

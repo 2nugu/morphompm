@@ -3,7 +3,7 @@
 // morphompm — minimal MLS-MPM with morphoelastic growth.
 //
 // v1: forward growth physics. Self-contained dense grid. Reuses only
-// basements::math (Vec3 / Matrix3 / SVD) — the verified material-agnostic core.
+// morphompm::math (Vec3 / Matrix3 / SVD) — the verified material-agnostic core.
 //
 // Morphoelastic kinematics (Rodriguez 1994):  F = Fe · Fg.
 //   Elastic stress depends ONLY on Fe = F · Fg^{-1}.
@@ -19,14 +19,14 @@
 #include <cmath>
 #include <algorithm>
 
-#include "basements/core/math/matrix3.h"
-#include "basements/core/math/svd.h"
+#include "morphompm/math/matrix3.h"
+#include "morphompm/math/svd.h"
 
 namespace morphompm {
 
-using basements::math::Vec3;
-using basements::math::Matrix3;
-using basements::math::SVD;
+using morphompm::math::Vec3;
+using morphompm::math::Matrix3;
+using morphompm::math::SVD;
 
 struct Particle {
     Vec3    x;                               // position
@@ -127,7 +127,7 @@ private:
         std::fill(force_.begin(),force_.end(),Vec3());
     }
 
-    // Quadratic B-spline weights; node-centering identical to Basements MLS-MPM.
+    // Quadratic B-spline weights; standard node-centered MLS-MPM.
     void weights(const Vec3& x, int base[3],
                  float wx[3], float wy[3], float wz[3]) const {
         const float fx = x.x * inv_dx_ - 0.5f;

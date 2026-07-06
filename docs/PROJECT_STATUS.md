@@ -3,8 +3,7 @@
 ## Overview
 **morphompm** — a differentiable morphoelastic growth-MPM for soft/living matter;
 verified differentiable core → infer material & growth laws from observed
-deformation. Forked from Basements 2026-06-28 (see `../README.md`). Architecture:
-[`PIPELINE.md`](./PIPELINE.md).
+deformation. Architecture: [`PIPELINE.md`](./PIPELINE.md).
 
 ## Current Phase
 **Phase 2: PIVOT to morphoelastic morphogenesis (2026-07-03).** North star moved
@@ -55,7 +54,7 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 |-----------|--------|------|
 | C++ growth-MPM forward (iso/aniso/differential), T1–T8 | `tests/test_growth.cpp` | 2026-06-28 |
 | Differential-growth residual-stress + bend figure | `outputs/figures/differential_growth.*` | 2026-06-28 |
-| Self-contained (math headers vendored) | `include/basements/core/math/` | 2026-06-28 |
+| Self-contained linear-algebra core (Vec3/Matrix3/SVD) | `include/morphompm/math/` | 2026-06-28 |
 | Taichi forward parity + constitutive autodiff | `python/experiments/growth_mpm.py` | 2026-06-29 |
 | Constitutive seam + manual VJPs (incl. SVD adjoint), FD-gated | `constitutive.py` | 2026-07-01 |
 | Transfer seam + composed assembly gate | `transfer.py` | 2026-07-01 |
@@ -83,7 +82,7 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
   differentiable reference/spec, production substrate deferred.
 - **AI is not the differentiator; the differentiable physics is.** Neural/learned
   constitutive is a future module that plugs into the [2] seam, gated on real data.
-- **UI/broad-compat deferred to last** (Basements died from premature breadth);
+- **UI/broad-compat deferred to last** (an earlier over-scoped effort stalled from premature breadth);
   compatibility via standard formats, not built integrations.
 
 ## Open Questions

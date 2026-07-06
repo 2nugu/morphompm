@@ -1,11 +1,11 @@
 #pragma once
 
-#include "basements/core/math/matrix3.h"
-#include "basements/core/math/common.h"
+#include "morphompm/math/matrix3.h"
+#include "morphompm/math/common.h"
 #include <cmath>
 #include <algorithm>
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
     /**
@@ -109,4 +109,4 @@ namespace math {
     };
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm

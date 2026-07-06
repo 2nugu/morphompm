@@ -1,11 +1,11 @@
-#ifndef BASEMENTS_QUATERNION_H
-#define BASEMENTS_QUATERNION_H
+#ifndef MORPHOMPM_QUATERNION_H
+#define MORPHOMPM_QUATERNION_H
 
 #include <cmath>
 #include <algorithm>
 #include "vec3.h"
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
 /**
@@ -472,6 +472,6 @@ HOST_DEVICE inline bool operator!=(const Quaternion& lhs, const Quaternion& rhs)
 }
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm
 
-#endif // BASEMENTS_QUATERNION_H
+#endif // MORPHOMPM_QUATERNION_H

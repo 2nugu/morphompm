@@ -1,12 +1,12 @@
-#ifndef BASEMENTS_VEC3_H
-#define BASEMENTS_VEC3_H
+#ifndef MORPHOMPM_VEC3_H
+#define MORPHOMPM_VEC3_H
 
 #include <cmath>
 #include <algorithm>
 #include <immintrin.h>  // AVX/AVX2 intrinsics
-#include "basements/core/math/common.h"
+#include "morphompm/math/common.h"
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
 // Epsilon is defined in common.h
@@ -290,6 +290,6 @@ HOST_DEVICE inline Vec3 operator*(float scalar, const Vec3& v) {
 }
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm
 
-#endif // BASEMENTS_VEC3_H
+#endif // MORPHOMPM_VEC3_H

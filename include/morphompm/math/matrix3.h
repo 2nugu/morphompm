@@ -1,14 +1,14 @@
-#ifndef BASEMENTS_MATRIX3_H
-#define BASEMENTS_MATRIX3_H
+#ifndef MORPHOMPM_MATRIX3_H
+#define MORPHOMPM_MATRIX3_H
 
 #include <cmath>
 #include <algorithm>
 #include "vec3.h"
 
 // Forward declaration
-namespace basements { namespace math { struct Quaternion; } }
+namespace morphompm { namespace math { struct Quaternion; } }
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
 /**
@@ -420,12 +420,12 @@ HOST_DEVICE inline Matrix3 operator*(float scalar, const Matrix3& mat) {
 }
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm
 
 // Include quaternion header for conversion functions
 #include "quaternion.h"
 
-namespace basements {
+namespace morphompm {
 namespace math {
 
 // Implementation of Matrix3-Quaternion conversions
@@ -502,6 +502,6 @@ HOST_DEVICE inline Quaternion Matrix3::to_quaternion() const {
 }
 
 } // namespace math
-} // namespace basements
+} // namespace morphompm
 
-#endif // BASEMENTS_MATRIX3_H
+#endif // MORPHOMPM_MATRIX3_H

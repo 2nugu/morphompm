@@ -102,7 +102,7 @@ Hencky strain, seam-compatible `stress(F,Fg)` + F-plastic-update) can precede th
 full rate-dependent HB. Either way the return-map/rate VJP has a yield kink
 (nonsmooth) — FD-gate away from the kink; clamp/​smooth at it. **DONE 2026-07-01** (HerschelBulkley: rate-dependent form, C_bar path, FD-gated).
 
-## Explicitly OUT / deferred (anti-scope-creep — the Basements lesson)
+## Explicitly OUT / deferred (anti-scope-creep — the premature-breadth lesson)
 - UI/GUI, broad app features → §9, last, only with users.
 - Broad compatibility → achieved by STANDARD formats, not by building integrations.
 - Granular/Drucker-Prager, GPU, ROS2, URDF, editor → not this project.

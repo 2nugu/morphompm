@@ -23,8 +23,8 @@
 
 using morphompm::GrowthSolver;
 using morphompm::Particle;
-using basements::math::Vec3;
-using basements::math::Matrix3;
+using morphompm::math::Vec3;
+using morphompm::math::Matrix3;
 
 static int g_fail = 0;
 #define CHECK(cond, msg) do { if (!(cond)) { \
