@@ -7,6 +7,8 @@ forward is physically correct, nor cover the hard regimes. This script checks:
   L3  HB VJP FD near the yield regime (γ̇ -> 0) — the defining bioink behavior.
   L4  Hencky SVD adjoint FD near degenerate singular values (isotropic-ish).
 """
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'python'))
 import numpy as np
 from morphompm.config import SimConfig
 from morphompm.constitutive import NeoHookean, HerschelBulkley, Hencky, _frob

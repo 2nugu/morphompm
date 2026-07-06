@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use morphompm in academic work, please cite it."
+title: "morphompm: a differentiable morphoelastic growth-MPM for soft / living matter"
+abstract: >-
+  A material-point-method solver for morphoelastic growth (F = Fe·Fg) with
+  hand-written, finite-difference-gated adjoints, enabling differentiable
+  inference of material and growth laws from observed deformation.
+authors:
+  - family-names: Lee
+    given-names: Hong-Gu
+    affiliation: Kangwon National University
+version: 0.1.0
+date-released: 2026-07-06
+license: MIT
+keywords:
+  - material point method
+  - differentiable simulation
+  - morphoelastic growth
+  - soft matter
+  - morphogenesis

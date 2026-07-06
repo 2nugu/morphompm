@@ -14,3 +14,7 @@ __pycache__/
 # (preserved reference artifacts: *.csv + *.png + *_desc.md)
 
 outputs/scene/
+# regenerable artifacts (scripts/reproduce.py rebuilds these); figures/ IS committed
+outputs/morphompm_dashboard.html
+outputs/parity_ref.csv
+*.egg-info/

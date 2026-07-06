@@ -1,5 +1,11 @@
 # Phase 3 — Morphogenesis validation + differentiable inverse (design)
 
+> **NOTE — literature values are UNVERIFIED.** Paper names below are pointers to
+> check against the primary source. Any specific numeric value (moduli, wavelengths,
+> growth strains, ranges) must be read from the paper itself before use — do NOT treat
+> numbers stated here as authoritative; a secondary search can be inaccurate.
+
+
 **Goal.** Turn the verified differentiable core into a *scientific result*: reproduce
 published morphogenesis (forward) and then do what the source papers could NOT — the
 **differentiable inverse** (observed morphology → inferred material/growth law) —
@@ -26,20 +32,23 @@ and inverse are BOTH first-class, analyzed together.
   consumer that JUSTIFIES the deferred `GrowthDriver`/`LayeredGrowth` seam.
 
 ### Rung 2 — Constrained swelling wrinkles vs Guvendiren 2009  [needs BC + resolution]
-- **Data (same-study):** Guvendiren 2009 tabulated G,E + measured wrinkle wavelength
-  λ (40–120 µm). Calibrate on (G,E); PREDICT λ; validate against measured λ.
+- **Data (same-study):** Guvendiren 2009 — reports gel stiffness + a measured
+  swelling-wrinkle wavelength (values pending primary-source check). Calibrate on
+  stiffness; PREDICT wavelength; validate against the measured wavelength.
 - **Triggers:** constrained/substrate **boundary condition** in the transfer (gel
   bonded to rigid base — new); wrinkle instability needs **resolution → vectorization/
   scale**; Biot analytic cross-check for the wavelength.
 - **Caveat (audit/lit):** λ ∝ (E-ratio)^{1/3} — a WEAK test; use multiple observables.
 
 ### Rung 3 — Gut looping vs Savin & Tabin 2011  [gold standard; scale]
-- **Data (fully tabulated, main table):** measured moduli (tube 4–5 kPa, mesentery
-  35→861 kPa), growth strain 28–33%, AND measured loop λ=9.5±0.5mm, n=15, R=1.9mm.
+- **Data (same-study, reported as tabulated):** Savin & Tabin 2011 — measured tissue
+  moduli, differential growth strain, and emergent loop geometry (wavelength, loop
+  count, radius). Specific numbers PENDING primary-source verification — do not hardcode
+  from memory.
 - **Forward:** reproduce the looping (composite tube+mesentery, differential growth).
 - **Inverse (the headline):** observed (λ, n, R) → infer modulus ratio E_m/E_t, scored
-  vs Savin's tensile measurements — what the original paper did NOT do. Use λ AND n AND
-  R (λ alone is under-determined, cube-root modulus dependence).
+  vs the paper's own reported measurements — what the original paper did NOT do. Use
+  wavelength AND loop-count AND radius together (a single wavelength is under-determined).
 - **Triggers:** 1D rod-sheet composite geometry; `GrowthDriver` field g(x); **scale**
   (vectorization / production substrate — the decision point PIPELINE §Substrate defers).
 

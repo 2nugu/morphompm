@@ -1,58 +1,88 @@
-# morphompm — Differentiable Morphoelastic MPM for Soft / Living Matter
+# morphompm
 
-**Working title.** Forked from `G:/CPP/Basements` (2026-06-28). This is *not*
-a rescue of the stalled agricultural-robotics engine; it is a **new, deliberately
-small** project that reuses Basements' verified material-agnostic numerical core
-and builds toward a single novel deliverable.
+**A differentiable morphoelastic growth-MPM for soft / living matter.**
 
-## Governing principle: deliverable-first, not capability-first
+A small, heavily-verified [Material Point Method](https://en.wikipedia.org/wiki/Material_point_method)
+solver for *morphoelastic growth* (`F = Fe·Fg`) with hand-written, finite-difference-gated
+adjoints — so you can **infer material and growth laws from an observed shape** by
+differentiating through the simulation.
 
-The Basements project stalled twice from the same disease: building *capabilities*
-(galaxies → agriculture → biofilm → "cube of everything") before a single validated
-result existed. The cure is to fix **one result that cannot be produced without this
-tool**, then build only the minimum slice of each layer that the result requires.
+> **Status: research work-in-progress.** The differentiable core is verified along three
+> independent axes and is fully reproducible. It has **not** yet been validated against
+> experimental data — that (against *published* morphogenesis datasets) is the next phase
+> (`docs/PHASE3_morphogenesis.md`). Treat this as a verified method, not a validated result.
 
-Novelty lives in the **deliverable**, not in the stack. Every component below already
-exists in the literature (MPM, Drucker-Prager, differentiable MPM, morphoelastic
-growth F=Fe·Fg, reaction-diffusion, printability windows). Assembling them is *not*
-novelty by itself — paper #1 was killed for exactly this. The defensible contribution
-is a *computed result the assembled parts produce that nobody has produced before*.
+<p align="center">
+  <img src="outputs/figures/inverse_recovery.png" width="46%" alt="inverse growth-rate recovery">
+  <img src="outputs/figures/differential_growth.png" width="46%" alt="differential-growth bending">
+</p>
 
-## The stack (build bottom-up; motivate top-down)
+## What it does
 
+- **Forward:** MLS-MPM with morphoelastic growth. Constitutive models are pluggable
+  (neo-Hookean, Hencky, a rate-dependent Herschel-Bulkley bioink) and injected into a
+  material-agnostic transfer.
+- **Adjoint:** every gradient (constitutive VJP, one MPM step incl. particle advection,
+  full trajectory) is **hand-written and gated against finite differences** — not left to
+  a framework's autodiff (which we found segfaults on these matrix-heavy kernels).
+- **Inverse:** compose the module adjoints → recover a growth parameter from an observed
+  final shape by gradient descent (the intended contribution).
+
+## Install
+
+```bash
+pip install -e .            # installs the `morphompm` package (numpy, matplotlib)
 ```
-[5] printability window + Pareto + optimal control   (application/output)
-[4] adaptive-sparse sampling -> surrogate operator    (NOT a dense "cube")
-[3] slow time axis: growth (F_g) + reaction-diffusion (active matter)
-[2] constitutive plugin interface (granular -> bioink -> viscoelastic gel)
-[1] differentiable MPM core (Fe, Hencky stress, autodiff)   [REUSED from Basements]
-[0] single trajectory, analytically verified                 <-- CURRENT STEP
-```
 
-### Discipline gates (each layer is GATED on the one below being validated)
-- **[0] now:** isotropic morphoelastic growth `F_g = g·I` inserted into the Hencky
-  stress loop via `Fe = F·F_g^{-1}`. Verified by (a) analytic constitutive stress and
-  (b) free-swelling equilibrium (`det F → g^3`, residual elastic strain → 0).
-- One constitutive model / one field at a time. Operator-split the slow (growth /
-  diffusion) clock from the fast (mechanics) clock — never one `dt` for both.
-- A feasibility map / surrogate is built on a *validated* single trajectory, never before.
+The C++ forward oracle (optional, used for cross-checking) builds with CMake:
 
-## Reused from Basements (the real salvage)
-- `basements::math` — Vec3 (AVX2), Matrix3, **SVD** (constitutive substrate).
-- MLS-MPM transfer + Hencky-Kirchhoff stress formulation (Hu 2018 / Klar 2016).
-
-## Shed (dead weight under this pivot)
-- Agricultural framing, terramechanics/Bekker, `ros2_bridge`, myCobot, editor,
-  rover/tine scenarios.
-
-## Open novelty question (under test)
-A background literature check is verifying whether the intersection
-*(open · differentiable · growth + diffusion · bioprinting-validated MPM)* is
-genuinely unoccupied. **No commitment beyond [0] until that returns.**
-
-## Build
-```
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+```bash
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64   # or your generator
 cmake --build build --config Release
-./build/Release/test_growth.exe
 ```
+
+## Quickstart
+
+```bash
+python -m morphompm.verify     # run every verification gate (~seconds)
+python scripts/reproduce.py    # one command: verify + C++ oracle + parity + regenerate figures/dashboard
+```
+
+## Verification (three independent axes + cross-implementation parity)
+
+| Axis | What it guards | Typical result |
+|------|----------------|----------------|
+| FD-gradient gates | adjoint ↔ forward consistency | rel.err ≤ 1e-9 |
+| forward-physics guard | forward *correctness* (free-swell `det F → g³`) | matches analytic |
+| confined-swell analytic oracle | constitutive coefficients (catches μ↔λ swaps) | exact |
+| numpy ↔ C++ parity | the two implementations agree | `max|ΔF|` ≈ 2e-5 |
+
+FD gates verify *consistency*, not *correctness* — so the forward and analytic oracles are
+separate axes (this split has caught real bugs). Runs are deterministic (single-thread).
+
+## Repository layout
+
+```
+python/morphompm/     the package — config, state, constitutive, transfer, integrate, diff, io, verify
+python/experiments/   Taichi ports (superseded; kept for the record — see banners)
+include/morphompm/     C++ forward-oracle solver (+ vendored linear-algebra headers under include/basements/)
+tests/                 C++ oracle tests (analytic + Timoshenko bending)
+scripts/               reproduce, parity, results (figures), make_dashboard, run_scene
+docs/                  PROJECT_STATUS, PIPELINE (architecture), PHASE3 (roadmap), PREREG
+outputs/figures/       preserved result figures (.png + .csv + _desc.md)
+```
+
+## Design notes
+
+- **PIPELINE.md** — end-to-end architecture, module seams, substrate strategy, verification/validation spines.
+- **PROJECT_STATUS.md** — current phase, decisions, honest open items.
+- **PHASE3_morphogenesis.md** — the next stage: validate + invert against published morphogenesis data.
+- Guiding principle: *deliverable-first* — build the minimum that a verifiable result needs;
+  extend a seam only when a second consumer appears; keep every claim gated.
+
+> Any literature values referenced in the docs are pointers to check against the primary
+> source, not verified numbers.
+
+## Citation & license
+
+See `CITATION.cff`. Licensed under the MIT License (`LICENSE`).

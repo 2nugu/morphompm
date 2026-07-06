@@ -1,5 +1,8 @@
 # Pre-registration — Hydrogel swelling as the growth-kinematics anchor
 
+> **NOTE:** any literature/material values here are placeholders to be read from the
+> primary source before use — not verified numbers. Measure the actual gel batch.
+
 **Purpose.** Start the validation spine with a cheap, self-doable, PHYSICAL
 anchor for the morphoelastic growth kinematics — and do it as a **prediction
 registered before measurement** (git-timestamp this file), so it can never
