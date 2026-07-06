@@ -17,7 +17,30 @@ differentiating through the simulation.
   <img src="outputs/figures/differential_growth.png" width="46%" alt="differential-growth bending">
 </p>
 
-## What it does
+## What you can use it for
+
+Concretely, the pipeline lets you:
+
+- **Infer an unknown growth law from a shape.** Given an observed final geometry, recover
+  the growth parameter that produced it by differentiating through the simulation
+  (`morphompm.diff.infer_growth`) — the headline use case.
+- **Predict morphogenesis forward.** Prescribe a differential-growth field and see the
+  resulting bending, swelling, wrinkling, and residual stress (e.g. the bilayer strip that
+  curls, validated against the Timoshenko analytic solution).
+- **Fit soft-material / bioink parameters.** Because the constitutive map is a pluggable
+  seam with a hand-written adjoint, you get gradients of any deformation w.r.t. its material
+  parameters — usable for calibration or gradient-based design.
+- **Drop in your own constitutive model** at the `constitutive.py` seam and get its VJP
+  gated against finite differences, then reuse the same transfer/trajectory/inverse machinery
+  unchanged.
+- **Use it as a verified reference.** A small, deterministic, three-axis-verified
+  growth-MPM with cross-checked C++/numpy implementations — a teaching or benchmarking
+  substrate for differentiable MPM and hand-written matrix-kernel adjoints.
+
+> **Scope today:** all of the above run on *simulated* observations. Inference against
+> real experimental data is the next phase (`docs/PHASE3_morphogenesis.md`).
+
+## How it works
 
 - **Forward:** MLS-MPM with morphoelastic growth. Constitutive models are pluggable
   (neo-Hookean, Hencky, a rate-dependent Herschel-Bulkley bioink) and injected into a
