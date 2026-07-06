@@ -37,10 +37,10 @@ cb.set_label(r"elastic log-strain $\|\varepsilon_e\|$  (residual stress)")
 ax.set_xlabel("x (m)")
 ax.set_ylabel("y (m)")
 ax.set_title("Differential-growth bending (bilayer)\n"
-             "top layer g=1.5, bottom g=1.1 — incompatible growth -> bend + residual stress")
+             "top g=1.5, bottom g=1.1 -> bend + residual stress", fontsize=10)
 ax.set_aspect("equal")
 fig.tight_layout()
-fig.savefig(PNG, dpi=150)
+fig.savefig(PNG, dpi=150, bbox_inches="tight")
 print("wrote", PNG)
 
 with open(DESC, "w", encoding="utf-8") as f:

@@ -44,9 +44,10 @@ def fig_inverse():
     ax.plot(its, hist, "o-", label="g estimate (Gauss-Newton)")
     ax.axhline(g_true, ls="--", color="crimson", label=f"g_true = {g_true}")
     ax.set_xlabel("iteration"); ax.set_ylabel("recovered growth rate g")
-    ax.set_title("Differentiable inverse: recover growth rate from observed shape")
+    ax.set_title("Differentiable inverse: recover growth rate from shape", fontsize=11)
     ax.legend(bbox_to_anchor=(1.01, 1), loc="upper left")
-    fig.tight_layout(); fig.savefig(os.path.join(FIG, "inverse_recovery.png"), dpi=150)
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG, "inverse_recovery.png"), dpi=150, bbox_inches="tight")
     _desc("inverse_recovery",
           "Gradient-based recovery of the growth rate g from an observed final shape "
           "(Σ det F), via the differentiable trajectory adjoint — the novel capability.",
@@ -71,10 +72,12 @@ def fig_bending():
                 arrowprops=dict(arrowstyle="->", color="#9C5A12"))
     ax.set_xlabel("growth mismatch  ε = g_top − g_bot")
     ax.set_ylabel("bending curvature κ (1/m)")
-    ax.set_title("Morphogenesis validation: bilayer bending vs Timoshenko\n"
-                 "(linear scaling ✓; offset is relaxation-convergence, not physics)")
+    ax.set_title("Bilayer bending vs Timoshenko\n"
+                 "(linear scaling OK; offset is relaxation-convergence, not physics)",
+                 fontsize=10)
     ax.legend(bbox_to_anchor=(1.01, 1), loc="upper left")
-    fig.tight_layout(); fig.savefig(os.path.join(FIG, "bending_timoshenko.png"), dpi=150)
+    fig.tight_layout()
+    fig.savefig(os.path.join(FIG, "bending_timoshenko.png"), dpi=150, bbox_inches="tight")
     _desc("bending_timoshenko",
           "Differential-growth bilayer bending curvature vs the independent Timoshenko "
           "bimetal-strip analytic (κ=1.5ε/h). Forward-physics validation in the "
