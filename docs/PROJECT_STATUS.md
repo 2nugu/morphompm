@@ -5,6 +5,31 @@
 verified differentiable core → infer material & growth laws from observed
 deformation. Architecture: [`PIPELINE.md`](./PIPELINE.md).
 
+## Public release & pause checkpoint (2026-07-06)
+
+**Status: PUBLISHED + PAUSED (resume-ready).** Public at
+https://github.com/2nugu/morphompm (MIT); archived on Zenodo —
+DOI [10.5281/zenodo.21215516](https://doi.org/10.5281/zenodo.21215516).
+
+Done this session: renamed the vendored math core to `morphompm::math` (sole-
+authored framing, no external-provenance language); public packaging
+(`pyproject.toml`, LICENSE, CITATION.cff, README with a "what you can use it for"
+section); fixed clipped/overlapping figure titles; **clean-clone build verified
+GREEN** from a fresh GitHub clone (`pip install -e .` + `python -m morphompm.verify`
+ALL GATES PASS + C++ `test_growth` ALL CHECKS PASSED); added [`../ROADMAP.md`](../ROADMAP.md)
+(status + honest open problems + where-to-help) and **7 labelled contributor
+issues** (#1–#7: good-first-issue / help-wanted / open-problem).
+
+**Resume here (when reopening):**
+- Traffic/discoverability (owner action): call-for-contributors post, arXiv /
+  Papers-with-Code entry (drafts can be assisted). Repos are conversion-ready;
+  only traffic remains.
+- Decide the contributor-contact channel (GitHub Discussions on? email public?)
+  so ROADMAP's "open a discussion first" actually works.
+- Cross-verify the file pointers in issues #1–#7 resolve (first-impression defence).
+- Next code step (Rung 1): symmetric numpy bilayer forward + relaxation-convergence
+  gate → then the κ→ε differentiable inverse (see `PHASE3_morphogenesis.md`).
+
 ## Current Phase
 **Phase 2: PIVOT to morphoelastic morphogenesis (2026-07-03).** North star moved
 from bioink-EXTRUSION → **differential-growth morphogenesis** (bending, swelling
@@ -62,6 +87,7 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 | Advect adjoint (full MPM, moving particles) + Herschel-Bulkley bioink model | integrate/constitutive | 2026-07-01 |
 | Logic audit: caught HB pressure-sign bug (FD-invisible); forward-physics guard added | verify [1p] | 2026-07-01 |
 | Strong forward oracle (confined-swell, modulus-dependent, teeth-verified) — 3 independent verify axes | constitutive | 2026-07-03 |
+| Public release: GitHub + Zenodo DOI, clean-clone build verified, ROADMAP + 7 labelled issues | repo + `ROADMAP.md` | 2026-07-06 |
 
 ## Active Decisions & Rationale
 - **Reproduction is first-class, not throwaway sanity.** (i) Reproducing established
@@ -98,10 +124,12 @@ confined-swell analytic). `python -m morphompm.verify` → ALL PASS.
 | Module | `python/morphompm/constitutive.py` | stress + VJP (neo-Hookean, Hencky) |
 | Module | `python/morphompm/transfer.py` | single-step MPM + VJP, assembly gate |
 | Figure | `outputs/figures/differential_growth.png` | residual-stress bending |
+| Release | https://github.com/2nugu/morphompm · DOI 10.5281/zenodo.21215516 | public repo + Zenodo archive |
 
 ## Docs Registry
 | File | Purpose | Created | Updated |
 |------|---------|---------|---------|
-| `docs/PROJECT_STATUS.md` | This — phase + decisions | 2026-07-01 | 2026-07-01 |
+| `docs/PROJECT_STATUS.md` | This — phase + decisions | 2026-07-01 | 2026-07-06 |
 | `docs/PIPELINE.md` | End-to-end architecture | 2026-07-01 | 2026-07-01 |
-| `README.md` | Deliverable-first principle + stack | 2026-06-28 | 2026-06-28 |
+| `ROADMAP.md` | Outward-facing status + open problems + where-to-help | 2026-07-06 | 2026-07-06 |
+| `README.md` | Deliverable-first principle + stack | 2026-06-28 | 2026-07-06 |
