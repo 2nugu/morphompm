@@ -109,6 +109,14 @@ outputs/figures/       preserved result figures (.png + .csv + _desc.md)
 > Any literature values referenced in the docs are pointers to check against the primary
 > source, not verified numbers.
 
+## Roadmap & contributing
+
+See **[`ROADMAP.md`](ROADMAP.md)** for the plan, the honest list of open problems (what
+is *not* solved yet), and a [where-to-help](ROADMAP.md#where-to-help) guide mapped to
+labelled issues (`good first issue`, `help wanted`, `open-problem`). Contributions —
+new constitutive models at the seam, tests, scenarios, or validation against published
+data — are welcome. 🤝
+
 ## Citation & license
 
 See `CITATION.cff`. Licensed under the MIT License (`LICENSE`).
