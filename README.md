@@ -2,6 +2,9 @@
 
 **A differentiable morphoelastic growth-MPM for soft / living matter.**
 
+[![DOI](https://zenodo.org/badge/1290685748.svg)](https://doi.org/10.5281/zenodo.21215516)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 A small, heavily-verified [Material Point Method](https://en.wikipedia.org/wiki/Material_point_method)
 solver for *morphoelastic growth* (`F = Fe·Fg`) with hand-written, finite-difference-gated
 adjoints — so you can **infer material and growth laws from an observed shape** by
