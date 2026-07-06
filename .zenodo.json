@@ -1,0 +1,22 @@
+{
+  "title": "morphompm: a differentiable morphoelastic growth-MPM for soft / living matter",
+  "upload_type": "software",
+  "description": "A Material Point Method solver for morphoelastic growth (F = Fe*Fg) with hand-written, finite-difference-gated adjoints, enabling differentiable inference of material and growth laws from an observed deformation. Verified along three independent axes (finite-difference gradient gates, a forward-physics oracle, and a confined-swell analytic oracle) with numpy/C++ cross-implementation parity, and fully reproducible from a single command.",
+  "creators": [
+    {
+      "name": "Lee, Hong-Gu",
+      "affiliation": "Kangwon National University"
+    }
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "keywords": [
+    "material point method",
+    "differentiable simulation",
+    "morphoelastic growth",
+    "soft matter",
+    "morphogenesis",
+    "adjoint method",
+    "inverse problems"
+  ]
+}
